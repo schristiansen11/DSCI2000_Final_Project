@@ -1,0 +1,137 @@
+---
+title: "MinneMUDAC Analysis Question 4"
+author: "Steven Christiansen"
+date: "11/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This report examines data provided by Farm Femmes, an agricultural company that grows soybeans. Data was provided by Farm Femmes to assist in answering two questions:
+
+1). Is there seasonality in the futures contracts' close values?
+
+2). Is there evidence that the delayed soybean seeding in 2019 impacted close values? 
+
+These questions were asked in part to help Farm Femmes decide when to sell their soybeans. Futures contracts estimate what a soybean will cost in the future; these values are represented by the close values (cents per bushel). In general, Farm Femmes will want to sell when close values are low, as the price of soybeans is likely higher than the agreed-upon price. Investigating whether or not there is seasonality in close values will help to idenitfy an approximate time period in which close values are low. Likewise, investigating the relationship between delays in seeding and close values will help Farm Femmes decide whether or not they should sell when soybeans are growing behind schedule (either due to late planting or other events).
+
+The hypothesis regarding seasonality is that seasonality exists because soybeans are a crop; it would make sense for close values to fluctuate depending on the time of year. The second hypothesis is that the delay in soybean seeding will not impact close values, as farmers would not necessarily know that a delay will occur when the contracts are developed, so a delay would not necessarily be factored into futures contracts. Conversely, if farmers are aware of a delay when calculating futures contracts, then it is hypothesized that the close values will be lower than usual, as farmers might suspect that there will be a decrease in supply and suspect that buyers will spend more for soybeans.
+
+Close values (in the form of futures contracts) was provided by Farm Femmes. There are three contracts: a July contract, a March contract, and a May contract. Each contract contains daily values for 2018 and 2019. The July contract also contains values for 2017. Farm Femmes also provided data regarding the delay in soybean planting, seeding, and setting pods. While daily values are presented, this data only featured values for selected dates. All data provided by Farm Femmes can be found at: https://drive.google.com/drive/folders/1fT1PfzIufFefUnV9Y04wqoEE592LDP66.
+
+
+```{r echo=F,message=F}
+source("../Tidy Code/active_soybeans_contracts_july_march_may.R")
+source("../Tidy Code/tidy_oil_crops_outlook_figure_1.R")
+source("../Analysis Code/analysis_question_4_final.R")
+```
+
+## Question 1: Is There Seasonality in the Close Values?
+
+In general, there seems to be limited evidence of seasonality in close values. As Figure 1 shows, close values appear to follow a pattern. In general, close values appear to be at their highest around December and March, and at their lowest between July and September. Figure 2 shows the same plot as Figure 1, but emphasizes values between July and September for each year.
+
+
+```{r echo = F,fig.cap="Figure 1. Close Values by Date.",fig.align='center'}
+close.seasonality.plot
+```
+
+```{r echo = F,fig.cap="Figure 2. Close Values by Date; July - September Values Emphasized.",fig.align='center'}
+close.seasonality.date.plot
+```
+
+Note that this trend is not followed every year. For example, in 2017 and 2019, the lowest close values occur before July. There is also a spike in close values between July and September of 2018. This indicates that there is limited seasonality; while there might be some seasonality expected in close values, the trend is not consistent between years. 
+
+Further deviations from a general trend can be seen in median-smoothed plots for each contract year (see Figure 3, Figure 4, and Figure 5). While the median values generally follow the expected trend (low values between July and September, high values between December and March of the next year), this is not consistent across years. This is most visible in the median-smoothed plot for the July contract (Figure 3), which has more data than the other two. The July contract median close values between July and September are higher than almost all preceding values in 2017; this is not the case for subsequent years.
+
+```{r echo = F,fig.cap="Figure 3. Median Close Values by Month and Year (July Contract).",fig.align='center',message=FALSE,warning=FALSE}
+july.month.plot
+```
+
+```{r echo = F,fig.cap="Figure 4. Median Close Values by Month and Year (March Contract).",fig.align='center',message=FALSE,warning=FALSE}
+march.month.plot
+```
+
+```{r echo = F,fig.cap="Figure 5. Median Close Values by Month and Year (May Contract).",fig.align='center',message=FALSE,warning=FALSE}
+may.month.plot
+```
+
+This evidence combined indicates that there is, at most, limited evidence for seasonality. While year 2018 and 2019 generally follow the same trend for each contract, the close values are similar enough between contracts that this should only be considered to be two years of data. Because year 2017 is different in the July contract, this implies that this trend might not be followed in other years. Thus, more data (preferably at least five to ten years) is needed before concluding whether or not there truly is seasonality in the close values.
+
+## Question 2: Is There Evidence that the Delayed Soybean Planting and Seeding in 2019 Impacted Close Values?
+
+According to data provided by Farm Femmes, there was a delay in the planting and seeding of soybeans in 2019. Data provided by Farm Femmes show the 2019 values for soybeans planted, soybean pods setting, and soybeans blooming as well as five-year averages for each. To determine the extent of the delay, the 2019 values were subtracted from the five-year average values. 2018 close values were subtracted from 2019 close values to determine how 2019 values compared to 2018 values (while this is not the same as comparing against a five-year average, five-year averages were not provided and could not be found online). 
+
+Unfortunately, there is little data on soybeans planted, soybean pods setting, and soybeans blooming. Due to this small sample size, results should be interpreted with caution. Figure 6 shows that there is a negative relationship between soybeans planted in 2019 (compared to the five-year average) and the 2019 close value (compared to the 2018 close value). This indicates that, when the number of soybeans planted is lower than usual, the close values wil also generally be lower than usual.
+
+```{r echo = F,fig.cap="Figure 6. Difference in Close Values by Difference in Soybeans Planted.",fig.align='center',message=FALSE,warning=FALSE}
+plant.behind.plot
+```
+
+The relationship between the difference in soybean pods setting and close values is similar (see Figure 7). In general, the farther behind the soybean pods are in terms of setting, the lower than usual the close values will be.
+
+```{r echo = F,fig.cap="Figure 7. Difference in Close Values by Difference in Soybean Pods Setting.",fig.align='center',message=FALSE,warning=FALSE}
+pods.behind.plot
+```
+
+However, the relationship between the delay in soybeans blooming and close values follows a different pattern: the farther behind the soybeans are in blooming, the higher the close values are compared to the previous year. This indicates that soybeans should not be sold when they are behind in blooming, as the commodity price is likely lower than the agreed-upon price.
+
+```{r echo = F,fig.cap="Figure 8. Difference in Close Values by Difference in Soybeans Blooming.",fig.align='center',message=FALSE,warning=FALSE}
+bloom.behind.plot
+```
+
+As stated, the data shown in Figures 6 - 8 only include between four and twelve data points per contract, and should be interpreted with caution. Additionally, this is not causal data; there are likely other variables that influence close values. While this data shows what appears to be a relationship, it is not conclusive and should be further examined with larger data.
+
+
+## Conclusion
+
+Overall, there appears to be limited evidence for seasonality; the data does not completely support the hypothesis that there is seasonality. While close values seem to follow some trends, these trends are not consistent in every year, and thus more data over more years is needed to make conclusions regarding seasonality. Furthermore, there appears to be a relationship between the delay in soybean planting and seeding in 2019 and 2019 close values. In general, the hypothesis that a delay in the planting and seeding of soybeans would be related to a decrease in close values was supported. However, the data provided only cover a small number of data points. Considered with the fact that this data cannot be said to be causal, it is difficult to say that the delay in planting and seeding had an impact on close values. This relationship should be examined further in future years with a larger amount of data.
+
+## Sources
+
+### Data provided by Farm Femmes:
+
+https://drive.google.com/drive/folders/1fT1PfzIufFefUnV9Y04wqoEE592LDP66?usp=drive_open
+
+### source for fig.cap
+
+https://stackoverflow.com/questions/35486935/knitr-and-figure-caption-in-html
+
+### Using ggplot2 package sources:
+
+#### Using date labels for plots:
+  
+http://www.sthda.com/english/articles/32-r-graphics-essentials/128-plot-time-series-data-using-ggplot/
+
+#### Using fontface: 
+  
+https://stackoverflow.com/questions/31568453/using-different-font-styles-in-annotate-ggplot2
+
+#### Using geom_vline:
+  
+https://stackoverflow.com/questions/5388832/how-to-get-a-vertical-geom-vline-to-an-x-axis-of-class-date
+
+#### Using legend.box.margin:
+  
+https://www.datanovia.com/en/blog/ggplot-legend-title-position-and-labels/
+  
+#### Using legend.box.background:
+  
+https://stackoverflow.com/questions/47584766/draw-a-box-around-a-legend-ggplot2
+
+#### Using legend.key:
+  
+https://www.datanovia.com/en/blog/ggplot-legend-title-position-and-labels/#rename-legend-labels-and-change-the-order-of-items
+
+####  Using scale_color_discrete: 
+  
+https://stackoverflow.com/questions/35712062/scale-fill-discrete-does-not-change-label-names
+https://www.datanovia.com/en/blog/ggplot-legend-title-position-and-labels/#rename-legend-labels-and-change-the-order-of-items
+
+  
+### Using reshape2 package:
+
+https://seananderson.ca/2013/10/19/reshape/
